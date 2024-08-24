@@ -12,6 +12,3 @@ qmake-build-*/
 
 # Ignore files ending in .pro.user for Qt Creator
 *.pro.user
-
-# Ignore CMakelists.txt files in all directories
-**/CMakeLists.txt
