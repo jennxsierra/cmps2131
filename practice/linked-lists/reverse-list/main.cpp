@@ -19,12 +19,13 @@ void printList(Node* head) {
 }
 
 // Function to reverse the linked list
-void reverseList(Node* n) {
-    if (n == nullptr)
+void printListReverse(Node* head) {
+    if (head->next == nullptr) {
         return;
+    }
 
-    reverseList(n->next);
-    std::cout << n->value << " ";
+    printListReverse(head->next);
+    std::cout << head->value << ", ";
 }
 
 int main() {

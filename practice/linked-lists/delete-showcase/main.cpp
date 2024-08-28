@@ -91,22 +91,16 @@ int main() {
 
     // Delete a node from the beginning
     deleteFromBeginning(head);
-
-    // Print the updated list
     cout << "List after deletion from the beginning: ";
     printList(head);
 
     // Delete a node from the end
     deleteFromEnd(head);
-
-    // Print the updated list
     cout << "List after deletion from the end: ";
     printList(head);
 
     // Delete a node after the second node
     deleteAfter(two);
-
-    // Print the updated list
     cout << "List after deletion after the second node: ";
     printList(head);
 
