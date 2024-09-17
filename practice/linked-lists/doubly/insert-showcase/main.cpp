@@ -2,7 +2,7 @@
 
 class Node {
 public:
-    int value;
+    int data;
     Node* next;
     Node* prev;
 };
@@ -10,7 +10,7 @@ public:
 void printList(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        std::cout << current->value << " ";
+        std::cout << current->data << " ";
         current = current->next;
     }
     std::cout << std::endl;
@@ -60,8 +60,8 @@ void insertAfter(Node* prevNode, int newValue) {
 void printOddNumbers(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        if (current->value % 2 != 0) {
-            std::cout << current->value << " ";
+        if (current->data % 2 != 0) {
+            std::cout << current->data << " ";
         }
         current = current->next;
     }
@@ -71,7 +71,7 @@ void printOddNumbers(Node* head) {
 void doubleList(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        current->value *= 2;
+        current->data *= 2;
         current = current->next;
     }
 }

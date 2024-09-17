@@ -4,7 +4,7 @@ using namespace std;
 // Creating a node
 class Node {
 public:
-    int value;
+    int data;
     Node* next;
 };
 
@@ -12,7 +12,7 @@ public:
 void printList(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        cout << current->value << " ";
+        cout << current->data << " ";
         current = current->next;
     }
     cout << endl;
@@ -25,7 +25,7 @@ void reverseList(Node* head) {
     }
 
     reverseList(head->next);
-    std::cout << head->value << " ";
+    std::cout << head->data << " ";
 }
 
 int main() {
@@ -44,11 +44,11 @@ int main() {
     five = new Node();
 
     // Assign values
-    one->value = 1;
-    two->value = 2;
-    three->value = 3;
-    four->value = 4;
-    five->value = 5;
+    one->data = 1;
+    two->data = 2;
+    three->data = 3;
+    four->data = 4;
+    five->data = 5;
 
     // Connect nodes
     one->next = two;

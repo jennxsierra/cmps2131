@@ -8,7 +8,7 @@ using namespace std;
 // Creating a node
 class Node {
 public:
-    int value;
+    int data;
     Node* next;
 };
 
@@ -43,9 +43,9 @@ int main() {
     three = new Node();
 
     // Assign values
-    one->value = 1;
-    two->value = 2;
-    three->value = 3;
+    one->data = 1;
+    two->data = 2;
+    three->data = 3;
 
     // Connect nodes
     one->next = two;
@@ -122,7 +122,7 @@ int main() {
 void printList(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        cout << current->value << " ";
+        cout << current->data << " ";
         current = current->next;
     }
     cout << endl;
@@ -135,14 +135,14 @@ void printListReverse(Node* head) {
 
     // Recursive call to print the list in reverse
     printListReverse(head->next);
-    std::cout << head->value << " ";
+    std::cout << head->data << " ";
 }
 
 void printOddNumbers(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        if (current->value % 2 != 0) {
-            cout << current->value << " ";
+        if (current->data % 2 != 0) {
+            cout << current->data << " ";
         }
         current = current->next;
     }
@@ -152,14 +152,14 @@ void printOddNumbers(Node* head) {
 void doubleList(Node* head) {
     Node* current = head;
     while (current != nullptr) {
-        current->value *= 2;
+        current->data *= 2;
         current = current->next;
     }
 }
 
 void insertAtBeginning(Node*& head, int newValue) {
     Node* newNode = new Node();
-    newNode->value = newValue;
+    newNode->data = newValue;
 
     newNode->next = head; // Point new node's next to the current head
     head = newNode;       // Update head to point to the new node
@@ -167,7 +167,7 @@ void insertAtBeginning(Node*& head, int newValue) {
 
 void insertAtEnd(Node*& head, int newValue) {
     Node* newNode = new Node();
-    newNode->value = newValue;
+    newNode->data = newValue;
     newNode->next = nullptr;
 
     // If the list is empty, make the new node the head
@@ -194,7 +194,7 @@ void insertAfterValue(Node* head, int targValue, int newValue) {
     }
 
     // Traverse to the node with the target value
-    while(head != nullptr && head->value != targValue) {
+    while(head != nullptr && head->data != targValue) {
         head = head->next;
     }
 
@@ -212,7 +212,7 @@ void insertAfterValue(Node* head, int targValue, int newValue) {
 
     // Create the new node
     Node* newNode = new Node();
-    newNode->value = newValue;
+    newNode->data = newValue;
 
     // Insert the new node after the node with the target value
     newNode->next = head->next;
@@ -250,7 +250,7 @@ void insertAfterNode(Node* head, int pos, int newValue) {
 
     // Create the new node
     Node* newNode = new Node();
-    newNode->value = newValue;
+    newNode->data = newValue;
 
     // Insert the new node after the current node
     newNode->next = current->next;

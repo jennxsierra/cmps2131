@@ -16,6 +16,10 @@ int main() {
         std::cout << "The string is not a palindrome." << std::endl;
     }
 
+    std::cin.get();  // Consume the newline character left in the input buffer
+    std::cout << "Press Enter to exit...";
+    std::cin.get();
+
     return 0;
 }
 
