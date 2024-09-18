@@ -35,4 +35,5 @@ endfunction()
 # Add all executables in top-level directories
 add_subdir_executables(${CMAKE_SOURCE_DIR}/practice)
 add_subdir_executables(${CMAKE_SOURCE_DIR}/quizzes)
+add_subdir_executables(${CMAKE_SOURCE_DIR}/textbook)
 # add_subdir_executables(${CMAKE_SOURCE_DIR}/other_directory)
