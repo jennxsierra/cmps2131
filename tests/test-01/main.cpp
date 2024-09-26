@@ -60,6 +60,10 @@ int main() {
 
     // Clean up allocated memory
     delete one;
+    delete two;
+    delete three;
+    delete four;
+    delete five;
 
     return 0;
 }
