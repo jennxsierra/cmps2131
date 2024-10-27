@@ -14,7 +14,7 @@ Node* inorderSuccessor(Node* root, int key);
 
 // MODIFICATION FUNCTIONS
 void insertNode(Node*& root, int value);
-void deleteNode(Node*& root, int value);
+void deleteNode(Node*& root, int key);
 
 // PRINTING FUNCTIONS
 void printInorder(Node* root);
@@ -24,8 +24,13 @@ void printPostorder(Node* root);
 // MISC FUNCTIONS
 int findMin(Node* root);
 int findMax(Node* root);
+int findDiffMinMax(Node* root);
 int nodeCount(Node* root);
 int treeHeight(Node* root);
+bool isBST(Node* root);
+int leafCount(Node* root);
+int singleParentCount(Node* root);
+int lessThanCount(Node* root, int key);
 
 int main () {
     Node* root{nullptr};
@@ -49,8 +54,18 @@ int main () {
     printPostorder(root);
     std::cout << std::endl;
 
-    std::cout << "\nMinimum value in the BST: " << findMin(root) << std::endl;
+    std::cout << "\n\tTextbook Questions:" << std::endl;
+    std::cout << "---------------------------------------------" << std::endl;
+    std::cout << "Is the binary tree a BST? " << (isBST(root) ? "Yes" : "No") << std::endl;
+    std::cout << "Number of leaf nodes: " << leafCount(root) << std::endl;
+    std::cout << "Number of nodes with only one child: " << singleParentCount(root) << std::endl;
+    std::cout << "Number of nodes with values less than 50: " << lessThanCount(root, 50) << std::endl;
+
+    std::cout << "\n\tAdditional Functions:" << std::endl;
+    std::cout << "---------------------------------------------" << std::endl;
+    std::cout << "Minimum value in the BST: " << findMin(root) << std::endl;
     std::cout << "Maximum value in the BST: " << findMax(root) << std::endl;
+    std::cout << "Difference between min and max values: " << findDiffMinMax(root) << std::endl;
     std::cout << "Number of nodes in the BST: " << nodeCount(root) << std::endl;
     std::cout << "Height of the BST: " << treeHeight(root) << std::endl;
 
@@ -219,6 +234,11 @@ int findMax(Node* root) {
     return root->data;
 }
 
+// Function to find the difference between the minimum and maximum values in the BST
+int findDiffMinMax(Node* root) {
+    return findMax(root) - findMin(root);
+}
+
 // Function to count the number of nodes in the BST
 int nodeCount(Node* root) {
     if (root == nullptr) {
@@ -233,4 +253,54 @@ int treeHeight(Node* root) {
         return 0;
     }
     return 1 + std::max(treeHeight(root->left), treeHeight(root->right));
+}
+
+// Function to check if the given binary tree is a BST
+bool isBST(Node* root) {
+    if (root == nullptr) {
+        return true;
+    }
+    if (root->left != nullptr && findMax(root->left) > root->data) {
+        return false;
+    }
+    if (root->right != nullptr && findMin(root->right) <= root->data) {
+        return false;
+    }
+    if (!isBST(root->left) || !isBST(root->right)) {
+        return false;
+    }
+    return true;
+}
+
+// Function to count the number of leaf nodes in the BST
+int leafCount(Node* root) {
+    if (root == nullptr) {
+        return 0;
+    }
+    if (root->left == nullptr && root->right == nullptr) {
+        return 1;
+    }
+    return leafCount(root->left) + leafCount(root->right);
+}
+
+// Function to count the number of nodes with only one child in the BST
+int singleParentCount(Node* root) {
+    if (root == nullptr || (root->left == nullptr && root->right == nullptr)) {
+        return 0;
+    }
+    if (root->left == nullptr || root->right == nullptr) {
+        return 1 + singleParentCount(root->left) + singleParentCount(root->right);
+    }
+    return singleParentCount(root->left) + singleParentCount(root->right);
+}
+
+// Function to count the number of nodes with values less than a given key
+int lessThanCount(Node* root, int key) {
+    if (root == nullptr) {
+        return 0;
+    }
+    if (root->data < key) {
+        return 1 + lessThanCount(root->left, key) + lessThanCount(root->right, key);
+    }
+    return lessThanCount(root->left, key);
 }
