@@ -27,20 +27,30 @@ int findMax(Node* root);
 int findDiffMinMax(Node* root);
 int nodeCount(Node* root);
 int treeHeight(Node* root);
+
+// TEXTBOOK QUESTIONS
 bool isBST(Node* root);
 int leafCount(Node* root);
 int singleParentCount(Node* root);
 int lessThanCount(Node* root, int key);
 
+// PRACTICE QUESTIONS
+void printOddNodes(Node* root);
+void printEvenNodes(Node* root);
+void printKeysInRange(Node* root, int low, int high);
+int findKthSmallest(Node* root, int k);
+int findKthLargest(Node* root, int k);
+int findMedian(Node* root);
+
 int main () {
     Node* root{nullptr};
-    insertNode(root, 50);
+    insertNode(root, 55);
     insertNode(root, 30);
-    insertNode(root, 20);
+    insertNode(root, 25);
     insertNode(root, 40);
-    insertNode(root, 70);
+    insertNode(root, 75);
     insertNode(root, 60);
-    insertNode(root, 80);
+    insertNode(root, 85);
 
     std::cout << "Inorder Traversal: ";
     printInorder(root);
@@ -69,18 +79,38 @@ int main () {
     std::cout << "Number of nodes in the BST: " << nodeCount(root) << std::endl;
     std::cout << "Height of the BST: " << treeHeight(root) << std::endl;
 
-    deleteNode(root, 20);
-    std::cout << "\nInorder Traversal after deleting 20: ";
+    std::cout << "\n\tPractice Questions:" << std::endl;
+    std::cout << "---------------------------------------------" << std::endl;
+    std::cout << "Odd nodes in the BST: ";
+    printOddNodes(root);
+    std::cout << std::endl;
+
+    std::cout << "Even nodes in the BST: ";
+    printEvenNodes(root);
+    std::cout << std::endl;
+
+    std::cout << "Keys in the BST within the range 30-60: ";
+    printKeysInRange(root, 30, 60);
+    std::cout << std::endl;
+
+    std::cout << "3rd smallest element in the BST: " << findKthSmallest(root, 3) << std::endl;
+    std::cout << "3rd largest element in the BST: " << findKthLargest(root, 3) << std::endl;
+    std::cout << "Median of the BST: " << findMedian(root) << std::endl;
+
+    std::cout << "\n\tDeleting nodes from the BST:" << std::endl;
+    std::cout << "---------------------------------------------" << std::endl;
+    deleteNode(root, 25);
+    std::cout << "Inorder Traversal after deleting 25: ";
     printInorder(root);
     std::cout << std::endl;
 
-    deleteNode(root, 70);
-    std::cout << "Inorder Traversal after deleting 70: ";
+    deleteNode(root, 75);
+    std::cout << "Inorder Traversal after deleting 75: ";
     printInorder(root);
     std::cout << std::endl;
 
-    deleteNode(root, 50);
-    std::cout << "Inorder Traversal after deleting 50: ";
+    deleteNode(root, 55);
+    std::cout << "Inorder Traversal after deleting 55: ";
     printInorder(root);
     std::cout << std::endl;
 
@@ -250,7 +280,7 @@ int nodeCount(Node* root) {
 // Function to find the height of the BST
 int treeHeight(Node* root) {
     if (root == nullptr) {
-        return 0;
+        return -1;
     }
     return 1 + std::max(treeHeight(root->left), treeHeight(root->right));
 }
@@ -303,4 +333,83 @@ int lessThanCount(Node* root, int key) {
         return 1 + lessThanCount(root->left, key) + lessThanCount(root->right, key);
     }
     return lessThanCount(root->left, key);
+}
+
+// Function to print the odd nodes in the BST
+void printOddNodes(Node* root) {
+    if (root == nullptr) {
+        return;
+    }
+    printOddNodes(root->left);
+    if (root->data % 2 != 0) {
+        std::cout << root->data << " ";
+    }
+    printOddNodes(root->right);
+}
+
+// Function to print the even nodes in the BST
+void printEvenNodes(Node* root) {
+    if (root == nullptr) {
+        return;
+    }
+    printEvenNodes(root->left);
+    if (root->data % 2 == 0) {
+        std::cout << root->data << " ";
+    }
+    printEvenNodes(root->right);
+}
+
+// Function to print the keys in the BST within a given range
+void printKeysInRange(Node* root, int low, int high) {
+    if (root == nullptr) {
+        return;
+    }
+    if (root->data > low) {
+        printKeysInRange(root->left, low, high);
+    }
+    if (root->data >= low && root->data <= high) {
+        std::cout << root->data << " ";
+    }
+    if (root->data < high) {
+        printKeysInRange(root->right, low, high);
+    }
+}
+
+// Function to find the kth smallest element in the BST
+int findKthSmallest(Node* root, int k) {
+    if (root == nullptr) {
+        return -1;
+    }
+    int leftCount{nodeCount(root->left)};
+    if (leftCount == k - 1) {
+        return root->data;
+    }
+    if (leftCount >= k) {
+        return findKthSmallest(root->left, k);
+    }
+    return findKthSmallest(root->right, k - leftCount - 1);
+}
+
+// Function to find the kth largest element in the BST
+int findKthLargest(Node* root, int k) {
+    if (root == nullptr) {
+        return -1;
+    }
+    int rightCount{nodeCount(root->right)};
+    if (rightCount == k - 1) {
+        return root->data;
+    }
+    if (rightCount >= k) {
+        return findKthLargest(root->right, k);
+    }
+    return findKthLargest(root->left, k - rightCount - 1);
+}
+
+// Function to find the median of the BST
+int findMedian(Node* root) {
+    int count{nodeCount(root)};
+    if (count % 2 != 0) {
+        return findKthSmallest(root, count / 2 + 1);
+    }
+    return (findKthSmallest(root, count / 2) + findKthSmallest(root, count / 2 + 1)) / 2;
 }
