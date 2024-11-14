@@ -16,5 +16,8 @@ int main() {
     maxHeap.insert(50);
     maxHeap.printHeap();
 
+    maxHeap.deleteNode(15);
+    maxHeap.printHeap();
+
     return 0;
 }

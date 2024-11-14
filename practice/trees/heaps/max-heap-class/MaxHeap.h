@@ -14,7 +14,8 @@ public:
     void deleteMax();
     void reheapUp(int);
     void reheapDown(int, int);
-
+    [[nodiscard]] int search(int) const;
+    void deleteNode(int);
 
 private:
     std::vector<int> heapArr{};

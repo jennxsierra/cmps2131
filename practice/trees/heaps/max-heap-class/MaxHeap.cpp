@@ -36,7 +36,7 @@ void MaxHeap::deleteMax() {
 
     std::cout << "Deleting: " << heapArr[0] << std::endl;
 
-    heapArr[0] = heapArr[heapArr.size() - 1];
+    heapArr[0] = heapArr.back();
     heapArr.pop_back();
     reheapDown(0, heapArr.size() - 1);
 }
@@ -74,3 +74,28 @@ void MaxHeap::reheapDown(int root, int bottom) {
     }
 }
 
+int MaxHeap::search(int key) const {
+    for (int i = 0; i < heapArr.size(); i++) {
+        if (heapArr[i] == key) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void MaxHeap::deleteNode(int key) {
+    int index = search(key);
+
+    if (index < 0) {
+        std::cout << "Key not found" << std::endl;
+        return;
+    }
+
+    std::cout << "Deleting: " << key << std::endl;
+
+    heapArr[index] = heapArr.back();
+    heapArr.pop_back();
+
+    reheapDown(index, heapArr.size() - 1);
+}
