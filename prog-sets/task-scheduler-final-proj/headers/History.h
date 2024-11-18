@@ -2,16 +2,20 @@
 #define CMPS2131_HISTORY_H
 
 #include "Task.h"
-#include <stack>
 #include <iostream>
+#include <stack>
+#include <list>
 
 class History {
 private:
     std::stack<Task> completedTasks;
+    std::list<Task> allTasks;
 
 public:
+    void logNewTask(const Task& task);
     void logCompletedTask(const Task& task);
-    void displayHistory() const;
+    void displayTaskHistory() const;
+    void displayCompletedTasks() const;
 };
 
 

@@ -1,9 +1,9 @@
 #ifndef CMPS2131_TASK_H
 #define CMPS2131_TASK_H
 
+#include <iostream>
 #include <string>
 #include <chrono>
-#include <iostream>
 
 class Task {
 private:

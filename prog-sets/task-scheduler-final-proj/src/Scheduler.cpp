@@ -8,7 +8,7 @@ Task Scheduler::inputTaskDetails(const std::string& prompt, bool clearBuffer) {
 
     std::cout << "\n--- " << prompt << " ---\n";
     if (clearBuffer) {
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
     std::cout << "Task Name: ";
     std::getline(std::cin, taskName);
@@ -50,6 +50,7 @@ Task Scheduler::inputTaskDetails(const std::string& prompt, bool clearBuffer) {
 
 void Scheduler::addTask(const Task& task) {
     taskQueue.push(task);
+    history.logNewTask(task);
 }
 
 void Scheduler::executeTask() {
@@ -63,11 +64,7 @@ void Scheduler::executeTask() {
     history.logCompletedTask(task);
 }
 
-void Scheduler::displayHistory() const {
-    history.displayHistory();
-}
-
-void Scheduler::viewAllTasks() const {
+void Scheduler::displayOngoingTasks() const {
     if (taskQueue.empty()) {
         std::cout << "\nNo tasks in the queue.\n";
         return;
@@ -141,9 +138,10 @@ void Scheduler::displayMenu() {
     std::cout << "1. Add Task\n";
     std::cout << "2. Modify Task\n";
     std::cout << "3. Execute Next Task\n";
-    std::cout << "4. View All Ongoing Tasks\n";
+    std::cout << "4. View Ongoing Tasks\n";
     std::cout << "5. View Completed Tasks\n";
-    std::cout << "6. Exit\n";
+    std::cout << "6. View Task History Log\n";
+    std::cout << "7. Exit\n";
     std::cout << "\nEnter your choice: ";
 }
 
@@ -156,10 +154,10 @@ void Scheduler::run() {
 
     do {
         Scheduler::displayMenu();
-        while (!(std::cin >> choice) || choice < 1 || choice > 6) {
+        while (!(std::cin >> choice) || choice < 1 || choice > 7) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid choice.\n\nEnter a number between 1 and 6: ";
+            std::cout << "Invalid choice.\n\nEnter a number between 1 and 7: ";
         }
 
         switch (choice) {
@@ -183,14 +181,18 @@ void Scheduler::run() {
                 break;
             }
             case 4: {
-                this->viewAllTasks();
+                this->displayOngoingTasks();
                 break;
             }
             case 5: {
-                this->displayHistory();
+                history.displayCompletedTasks();
                 break;
             }
             case 6: {
+                history.displayTaskHistory();
+                break;
+            }
+            case 7: {
                 std::cout << "\nExiting the Task Scheduler. Goodbye!\n";
                 break;
             }
@@ -199,5 +201,5 @@ void Scheduler::run() {
                 break;
             }
         }
-    } while (choice != 6);
+    } while (choice != 7);
 }

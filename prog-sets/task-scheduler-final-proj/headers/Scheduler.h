@@ -3,9 +3,9 @@
 
 #include "Task.h"
 #include "headers/History.h"
+#include <iostream>
 #include <queue>
 #include <vector>
-#include <iostream>
 #include <limits>
 #include <iomanip>
 #include <sstream>
@@ -20,8 +20,7 @@ private:
 public:
     void addTask(const Task& task);
     void executeTask();
-    void displayHistory() const;
-    void viewAllTasks() const;
+    void displayOngoingTasks() const;
     void modifyTask();
     static void displayMenu() ;
     static Task inputTask() ;
