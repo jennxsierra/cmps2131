@@ -1,20 +1,41 @@
 #ifndef CMPS2131_TASK_H
 #define CMPS2131_TASK_H
+
 #include <string>
+#include <chrono>
+#include <iostream>
 
 class Task {
-public:
+private:
     int priority;
-    std::string taskName;
+    std::string name;
     std::string description;
-    int deadline;
-    int timeLeft;
+    std::chrono::system_clock::time_point deadline;
+    std::chrono::system_clock::time_point completedTime;
 
-    // Constructor to initialize task
-    Task(int p, std::string name, std::string desc, int dline, int tLeft);
+public:
+    Task(int priority, const std::string& name, const std::string& description,
+         const std::chrono::system_clock::time_point& deadline);
 
-    // Comparison operator to compare priorities
+    // Getters
+    [[nodiscard]] int getPriority() const;
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::string getDescription() const;
+    [[nodiscard]] std::chrono::system_clock::time_point getDeadline() const;
+    [[nodiscard]] std::chrono::duration<double> getTimeLeft() const;
+    [[nodiscard]] std::chrono::system_clock::time_point getCompletedTime() const;
+
+    // Setters
+    void setName(const std::string& name);
+    void setDescription(const std::string& description);
+    void setPriority(int priority);
+    void setDeadline(const std::chrono::system_clock::time_point& deadline);
+    void setCompletedTime(const std::chrono::system_clock::time_point& time);
+
+    // Operator overloads for priority comparison
+    bool operator>(const Task& other) const;
     bool operator<(const Task& other) const;
+
 };
 
 
