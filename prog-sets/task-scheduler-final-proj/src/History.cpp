@@ -40,6 +40,7 @@ void History::displayTaskHistory() const {
     });
 
     std::cout << "\n\t--- All Tasks History ---\n";
+    int index = 1;
     for (const auto& task : sortedTasks) {
         std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
         std::time_t createdTime = std::chrono::system_clock::to_time_t(task.getCreatedTime());
@@ -52,8 +53,9 @@ void History::displayTaskHistory() const {
         std::strftime(modifiedStr, sizeof(modifiedStr), "%Y-%m-%d %H:%M:%S",
                       std::localtime(&modifiedTime));
 
-        std::cout << "\n#00" << task.getID() << " - " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "\n" << index++ << ". " << task.getName() << " [" << task.getStatus() << "]\n";
         std::cout << "--------------------------------------\n";
+        std::cout << "Task ID: #00" << task.getID() << "\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Description: " << task.getDescription() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
@@ -68,7 +70,7 @@ void History::displayTaskHistory() const {
             char completedStr[20];
             std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
                           std::localtime(&completedTime));
-            std::cout << "Completed At: " << completedStr << "\n\n";
+            std::cout << "Completed At: " << completedStr << "\n";
         }
     }
 }
@@ -91,6 +93,7 @@ void History::displayCompletedTasks() const {
     });
 
     std::cout << "\n\t--- Completed Tasks History ---\n\n";
+    int index = 1;
     for (const auto& task : sortedTasks) {
         std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
         std::time_t completedTime = std::chrono::system_clock::to_time_t(task.getCompletedTime());
@@ -100,8 +103,9 @@ void History::displayCompletedTasks() const {
         std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
                       std::localtime(&completedTime));
 
-        std::cout << "#00" << task.getID() << " - " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << index++ << ". " << task.getName() << " [" << task.getStatus() << "]\n";
         std::cout << "--------------------------------------\n";
+        std::cout << "Task ID: #00" << task.getID() << "\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
         std::cout << "Completed At: " << completedStr << "\n\n";
