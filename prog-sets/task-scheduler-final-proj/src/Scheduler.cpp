@@ -107,9 +107,21 @@ void Scheduler::modifyTask() {
         return;
     }
 
+    std::string input;
     int taskId;
-    std::cout << "Enter the ID of the task to modify: ";
-    std::cin >> taskId;
+    std::cout << "Enter Task ID [Ex: #000]: ";
+    std::cin >> input;
+
+    if (input[0] == '#') {
+        input = input.substr(1);
+    }
+
+    try {
+        taskId = std::stoi(input);
+    } catch (const std::invalid_argument& e) {
+        std::cout << "\nInvalid Task ID format.\n";
+        return;
+    }
 
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
     bool found = false;

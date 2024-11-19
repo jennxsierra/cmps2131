@@ -28,7 +28,8 @@ void History::displayTaskHistory() const {
         std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S",
                       std::localtime(&deadlineTime));
 
-        std::cout << "#" << task.getID() << ". " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "#00" << task.getID() << " - " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "--------------------------------------\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Description: " << task.getDescription() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
@@ -38,10 +39,8 @@ void History::displayTaskHistory() const {
             char completedStr[20];
             std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
                           std::localtime(&completedTime));
-            std::cout << "Completed At: " << completedStr << "\n";
+            std::cout << "Completed At: " << completedStr << "\n\n";
         }
-
-        std::cout << "--------------------------------------\n";
     }
 }
 
@@ -65,7 +64,8 @@ void History::displayCompletedTasks() const {
         std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
                       std::localtime(&completedTime));
 
-        std::cout << "#" << task.getID() << ". " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "#00" << task.getID() << " - " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "--------------------------------------\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
         std::cout << "Completed At: " << completedStr << "\n\n";
