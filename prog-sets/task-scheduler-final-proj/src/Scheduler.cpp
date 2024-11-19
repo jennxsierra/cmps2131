@@ -59,7 +59,7 @@ void Scheduler::displayTaskDetails(const Task& task) {
     char deadlineStr[20];
     std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", deadlineTm);
 
-    std::cout << "#" << task.getID() << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
+    std::cout << "#00" << task.getID() << " - " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
     std::cout << "--------------------------------------\n";
     std::cout << "Description: " << task.getDescription() << "\n";
     std::cout << "Status: " << task.getStatus() << "\n";
@@ -120,6 +120,7 @@ void Scheduler::modifyTask() {
 
         if (task.getID() == taskId) {
             found = true;
+            std::cout << "\n\t--- Task Details ---\n\n";
             displayTaskDetails(task);
 
             char confirmation;
