@@ -48,7 +48,7 @@ Task Scheduler::inputTaskDetails(const std::string& prompt, int id) {
     return {id, priority, taskName, description, deadline};
 }
 
-void Scheduler::displayTaskDetails(const Task& task, int index) {
+void Scheduler::displayTaskDetails(const Task& task) {
     auto timeLeft = task.getTimeLeft();
     auto days = std::chrono::duration_cast<std::chrono::days>(timeLeft).count();
     auto hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count() % 24;
@@ -59,7 +59,7 @@ void Scheduler::displayTaskDetails(const Task& task, int index) {
     char deadlineStr[20];
     std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", deadlineTm);
 
-    std::cout << index << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
+    std::cout << "#" << task.getID() << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
     std::cout << "--------------------------------------\n";
     std::cout << "Description: " << task.getDescription() << "\n";
     std::cout << "Status: " << task.getStatus() << "\n";
@@ -80,7 +80,7 @@ void Scheduler::executeTask() {
 
     Task task = taskQueue.top();
     std::cout << "\n\t--- Next Task ---\n\n";
-    displayTaskDetails(task, 1);
+    displayTaskDetails(task);
 
     char confirmation;
     std::cout << "Execute this Task? [Y/N]: ";
@@ -147,10 +147,9 @@ void Scheduler::displayOngoingTasks() const {
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue = taskQueue;
     std::cout << "\n--- Tasks in Queue ---\n\n";
 
-    int index = 1;
     while (!tempQueue.empty()) {
         const Task& task = tempQueue.top();
-        displayTaskDetails(task, index++);
+        displayTaskDetails(task);
         tempQueue.pop();
     }
 }
