@@ -29,15 +29,15 @@ Task Scheduler::inputTaskDetails(const std::string& prompt, int id) {
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     while (true) {
-        std::cout << "Deadline (YYYY-MM-DD HH:MM:SS) [24-hour format]: ";
+        std::cout << "Deadline [YYYY-MM-DD HH:MM:SS (24H)]: ";
         std::getline(std::cin, deadlineStr);
         if (!std::regex_match(deadlineStr, dateTimeRegex)) {
-            std::cout << "Invalid date/time format. Enter in the format YYYY-MM-DD HH:MM:SS.\n";
+            std::cout << "Invalid date/time format. Enter in the format YYYY-MM-DD HH:MM:SS.\n\n";
         } else {
             std::istringstream ss(deadlineStr);
             ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
             if (ss.fail()) {
-                std::cout << "Failed to parse date/time. Please try again.\n";
+                std::cout << "Failed to parse date/time. Please try again.\n\n";
             } else {
                 break;
             }
@@ -120,18 +120,27 @@ void Scheduler::modifyTask() {
 
         if (task.getID() == taskId) {
             found = true;
-            Task modifiedTask = inputTaskDetails("Modify Task Details", taskId);
-            task.setName(modifiedTask.getName());
-            task.setPriority(modifiedTask.getPriority());
-            task.setDescription(modifiedTask.getDescription());
-            task.setDeadline(modifiedTask.getDeadline());
+            displayTaskDetails(task);
+
+            char confirmation;
+            std::cout << "Modify this Task? [Y/N]: ";
+            std::cin >> confirmation;
+
+            if (confirmation == 'y' || confirmation == 'Y') {
+                Task modifiedTask = inputTaskDetails("Modify Task Details", taskId);
+                task.setName(modifiedTask.getName());
+                task.setPriority(modifiedTask.getPriority());
+                task.setDescription(modifiedTask.getDescription());
+                task.setDeadline(modifiedTask.getDeadline());
+                std::cout << "\nTask modified successfully!\n";
+            } else {
+                std::cout << "\nTask modification canceled.\n";
+            }
         }
         tempQueue.push(task);
     }
 
-    if (found) {
-        std::cout << "\nTask modified successfully!\n";
-    } else {
+    if (!found) {
         std::cout << "\nTask not found.\n";
     }
 

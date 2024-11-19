@@ -22,14 +22,13 @@ void History::displayTaskHistory() const {
     }
 
     std::cout << "\n--- All Tasks History ---\n\n";
-    int index = 1;
     for (const auto& task : allTasks) {
         std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
         char deadlineStr[20];
         std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S",
                       std::localtime(&deadlineTime));
 
-        std::cout << index++ << ". " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "#" << task.getID() << ". " << task.getName() << " [" << task.getStatus() << "]\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Description: " << task.getDescription() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
@@ -55,7 +54,6 @@ void History::displayCompletedTasks() const {
     std::stack<Task> tempStack = completedTasks;
     std::cout << "\n--- Completed Tasks History ---\n\n";
 
-    int index = 1;
     while (!tempStack.empty()) {
         const Task& task = tempStack.top();
 
@@ -67,7 +65,7 @@ void History::displayCompletedTasks() const {
         std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
                       std::localtime(&completedTime));
 
-        std::cout << index++ << ". " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "#" << task.getID() << ". " << task.getName() << " [" << task.getStatus() << "]\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
         std::cout << "Completed At: " << completedStr << "\n\n";
