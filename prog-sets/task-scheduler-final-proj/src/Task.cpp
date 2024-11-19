@@ -2,9 +2,10 @@
 
 Task::Task(int taskID, int taskPrio, const std::string& taskName, const std::string& tDesc,
            const std::chrono::system_clock::time_point& taskDLine)
-    : id(taskID), priority(taskPrio), name(taskName), description(tDesc), deadline(taskDLine), status("Ongoing") {
+    : id(taskID), priority(taskPrio), name(taskName), description(tDesc), deadline(taskDLine), status("Ongoing"),
+    createdTime(std::chrono::system_clock::now()), modifiedTime(std::chrono::system_clock::time_point::min()) {
     if (priority < 1 || priority > 5) {
-        throw std::invalid_argument("Priority must be between 1 and 5.");
+        throw std::invalid_argument("Priority must be between 1-5.");
     }
 }
 
@@ -20,6 +21,10 @@ std::string Task::getName() const {
     return name;
 }
 
+std::string Task::getStatus() const {
+    return status;
+}
+
 std::string Task::getDescription() const {
     return description;
 }
@@ -33,16 +38,24 @@ std::chrono::duration<double> Task::getTimeLeft() const {
     return std::chrono::duration_cast<std::chrono::duration<double>>(deadline - now);
 }
 
+std::chrono::system_clock::time_point Task::getCreatedTime() const {
+    return createdTime;
+}
+
+std::chrono::system_clock::time_point Task::getModifiedTime() const {
+    return modifiedTime;
+}
+
 std::chrono::system_clock::time_point Task::getCompletedTime() const {
     return completedTime;
 }
 
-std::string Task::getStatus() const {
-    return status;
-}
-
 void Task::setName(const std::string& taskName) {
     this->name = taskName;
+}
+
+void Task::setStatus(const std::string& taskStatus) {
+    this->status = taskStatus;
 }
 
 void Task::setDescription(const std::string& taskDesc) {
@@ -60,12 +73,12 @@ void Task::setDeadline(const std::chrono::system_clock::time_point& taskDLine) {
     this->deadline = taskDLine;
 }
 
-void Task::setCompletedTime(const std::chrono::system_clock::time_point& time) {
-    completedTime = time;
+void Task::setModifiedTime(const std::chrono::system_clock::time_point& time) {
+    modifiedTime = time;
 }
 
-void Task::setStatus(const std::string& taskStatus) {
-    this->status = taskStatus;
+void Task::setCompletedTime(const std::chrono::system_clock::time_point& time) {
+    completedTime = time;
 }
 
 bool Task::operator>(const Task& other) const {

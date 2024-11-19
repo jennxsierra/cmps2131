@@ -146,6 +146,7 @@ void Scheduler::modifyTask() {
                 task.setDescription(modifiedTask.getDescription());
                 task.setDeadline(modifiedTask.getDeadline());
                 std::cout << "\nTask modified successfully!\n";
+                history.logModifiedTask(task);
             } else {
                 std::cout << "\nTask modification canceled.\n";
             }
@@ -167,7 +168,7 @@ void Scheduler::displayOngoingTasks() const {
     }
 
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue = taskQueue;
-    std::cout << "\n--- Tasks in Queue ---\n\n";
+    std::cout << "\n\t--- Tasks in Queue ---\n\n";
 
     while (!tempQueue.empty()) {
         const Task& task = tempQueue.top();
