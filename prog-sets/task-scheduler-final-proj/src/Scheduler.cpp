@@ -48,7 +48,7 @@ Task Scheduler::inputTaskDetails(const std::string& prompt, int id) {
     return {id, priority, taskName, description, deadline};
 }
 
-void Scheduler::displayTaskDetails(const Task& task) {
+void Scheduler::displayTaskDetails(const Task& task, int i) {
     auto timeLeft = task.getTimeLeft();
     auto days = std::chrono::duration_cast<std::chrono::days>(timeLeft).count();
     auto hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count() % 24;
@@ -59,8 +59,9 @@ void Scheduler::displayTaskDetails(const Task& task) {
     char deadlineStr[20];
     std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", deadlineTm);
 
-    std::cout << "#00" << task.getID() << " - " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
+    std::cout << i << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
     std::cout << "--------------------------------------\n";
+    std::cout << "Task ID: #00" << task.getID() << "\n";
     std::cout << "Description: " << task.getDescription() << "\n";
     std::cout << "Status: " << task.getStatus() << "\n";
     std::cout << "Deadline: " << deadlineStr << "\n";
@@ -80,7 +81,7 @@ void Scheduler::executeTask() {
 
     Task task = taskQueue.top();
     std::cout << "\n\t--- Next Task ---\n\n";
-    displayTaskDetails(task);
+    displayTaskDetails(task, 1);
 
     char confirmation;
     std::cout << "Execute this Task? [Y/N]: ";
@@ -126,6 +127,7 @@ void Scheduler::modifyTask() {
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
     bool found = false;
 
+    int index = 1;
     while (!taskQueue.empty()) {
         Task task = taskQueue.top();
         taskQueue.pop();
@@ -133,7 +135,7 @@ void Scheduler::modifyTask() {
         if (task.getID() == taskId) {
             found = true;
             std::cout << "\n\t--- Task Details ---\n\n";
-            displayTaskDetails(task);
+            displayTaskDetails(task, index);
 
             char confirmation;
             std::cout << "Modify this Task? [Y/N]: ";
@@ -152,6 +154,7 @@ void Scheduler::modifyTask() {
             }
         }
         tempQueue.push(task);
+        index++;
     }
 
     if (!found) {
@@ -170,13 +173,13 @@ void Scheduler::displayOngoingTasks() const {
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue = taskQueue;
     std::cout << "\n\t--- Tasks in Queue ---\n\n";
 
+    int index = 1;
     while (!tempQueue.empty()) {
         const Task& task = tempQueue.top();
-        displayTaskDetails(task);
+        displayTaskDetails(task, index++);
         tempQueue.pop();
     }
 }
-
 
 void Scheduler::displayMenu() {
     std::cout << "\n--- Task Scheduler Menu ---\n";

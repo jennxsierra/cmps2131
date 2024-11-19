@@ -17,7 +17,7 @@ private:
     History history;
     static int nextTaskID;
     static Task inputTaskDetails(const std::string& prompt, int id);
-    static void displayTaskDetails(const Task& task);
+    static void displayTaskDetails(const Task& task, int index);
 
 public:
     void addTask(const Task& task);
