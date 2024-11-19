@@ -2,16 +2,14 @@
 
 int Scheduler::nextTaskID = 1;
 
-Task Scheduler::inputTaskDetails(const std::string& prompt, bool clearBuffer, int id) {
+Task Scheduler::inputTaskDetails(const std::string& prompt, int id) {
     int priority;
     std::string taskName, description, deadlineStr;
     std::tm tm = {};
     std::regex dateTimeRegex(R"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})");
 
     std::cout << "\n--- " << prompt << " ---\n";
-    if (clearBuffer) {
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cout << "Task Name: ";
     std::getline(std::cin, taskName);
     std::cout << "Description: ";
@@ -100,7 +98,7 @@ void Scheduler::executeTask() {
 }
 
 Task Scheduler::inputTask() {
-    return inputTaskDetails("Enter Task Details", true, nextTaskID++);
+    return inputTaskDetails("Enter Task Details", nextTaskID++);
 }
 
 void Scheduler::modifyTask() {
@@ -122,7 +120,7 @@ void Scheduler::modifyTask() {
 
         if (task.getID() == taskId) {
             found = true;
-            Task modifiedTask = inputTaskDetails("Modify Task Details", false, taskId);
+            Task modifiedTask = inputTaskDetails("Modify Task Details", taskId);
             task.setName(modifiedTask.getName());
             task.setPriority(modifiedTask.getPriority());
             task.setDescription(modifiedTask.getDescription());

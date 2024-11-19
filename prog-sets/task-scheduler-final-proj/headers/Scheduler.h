@@ -16,7 +16,7 @@ private:
     std::priority_queue<Task, std::vector<Task>, std::greater<>> taskQueue;
     History history;
     static int nextTaskID;
-    static Task inputTaskDetails(const std::string& prompt, bool clearBuffer, int id);
+    static Task inputTaskDetails(const std::string& prompt, int id);
     static void displayTaskDetails(const Task& task, int index) ;
 
 public:
