@@ -5,11 +5,12 @@ void History::logNewTask(const Task& task) {
 }
 
 void History::logCompletedTask(const Task& task) {
-    completedTasks.push(task);
+    completedTasks.emplace(task);
 
     for (auto& t : allTasks) {
-        if (t.getName() == task.getName()) {
+        if (t.getID() == task.getID()) {
             t.setCompletedTime(task.getCompletedTime());
+            t.setStatus("Completed");
         }
     }
 }
@@ -25,19 +26,20 @@ void History::displayTaskHistory() const {
     for (const auto& task : allTasks) {
         std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
         char deadlineStr[20];
-        std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", std::localtime(&deadlineTime));
+        std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S",
+                      std::localtime(&deadlineTime));
 
-        std::cout << index++ << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
+        std::cout << index++ << ". " << task.getName() << " [" << task.getStatus() << "]\n";
+        std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Description: " << task.getDescription() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
 
         if (task.getCompletedTime().time_since_epoch().count() != 0) {
             std::time_t completedTime = std::chrono::system_clock::to_time_t(task.getCompletedTime());
             char completedStr[20];
-            std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S", std::localtime(&completedTime));
+            std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
+                          std::localtime(&completedTime));
             std::cout << "Completed At: " << completedStr << "\n";
-        } else {
-            std::cout << "Status: Ongoing\n";
         }
 
         std::cout << "--------------------------------------\n";
@@ -60,10 +62,12 @@ void History::displayCompletedTasks() const {
         std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
         std::time_t completedTime = std::chrono::system_clock::to_time_t(task.getCompletedTime());
         char deadlineStr[20], completedStr[20];
-        std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", std::localtime(&deadlineTime));
-        std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S", std::localtime(&completedTime));
+        std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S",
+                      std::localtime(&deadlineTime));
+        std::strftime(completedStr, sizeof(completedStr), "%Y-%m-%d %H:%M:%S",
+                      std::localtime(&completedTime));
 
-        std::cout << index++ << ". " << task.getName() << " - [Completed]\n";
+        std::cout << index++ << ". " << task.getName() << " [" << task.getStatus() << "]\n";
         std::cout << "Priority: " << task.getPriority() << "\n";
         std::cout << "Deadline: " << deadlineStr << "\n";
         std::cout << "Completed At: " << completedStr << "\n\n";

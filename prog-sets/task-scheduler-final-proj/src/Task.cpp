@@ -1,11 +1,15 @@
 #include "headers/Task.h"
 
-Task::Task(int priority, const std::string& name, const std::string& description,
-           const std::chrono::system_clock::time_point& deadline)
-    : priority(priority), name(name), description(description), deadline(deadline) {
+Task::Task(int taskID, int taskPrio, const std::string& taskName, const std::string& tDesc,
+           const std::chrono::system_clock::time_point& taskDLine)
+    : id(taskID), priority(taskPrio), name(taskName), description(tDesc), deadline(taskDLine), status("Ongoing") {
     if (priority < 1 || priority > 5) {
         throw std::invalid_argument("Priority must be between 1 and 5.");
     }
+}
+
+int Task::getID() const {
+    return id;
 }
 
 int Task::getPriority() const {
@@ -33,27 +37,35 @@ std::chrono::system_clock::time_point Task::getCompletedTime() const {
     return completedTime;
 }
 
-void Task::setName(const std::string& name) {
-    this->name = name;
+std::string Task::getStatus() const {
+    return status;
 }
 
-void Task::setDescription(const std::string& description) {
-    this->description = description;
+void Task::setName(const std::string& taskName) {
+    this->name = taskName;
 }
 
-void Task::setPriority(int priority) {
-    if (priority < 1 || priority > 5) {
+void Task::setDescription(const std::string& taskDesc) {
+    this->description = taskDesc;
+}
+
+void Task::setPriority(int taskPrio) {
+    if (taskPrio < 1 || taskPrio > 5) {
         throw std::invalid_argument("Priority must be between 1 and 5.");
     }
-    this->priority = priority;
+    this->priority = taskPrio;
 }
 
-void Task::setDeadline(const std::chrono::system_clock::time_point& deadline) {
-    this->deadline = deadline;
+void Task::setDeadline(const std::chrono::system_clock::time_point& taskDLine) {
+    this->deadline = taskDLine;
 }
 
 void Task::setCompletedTime(const std::chrono::system_clock::time_point& time) {
     completedTime = time;
+}
+
+void Task::setStatus(const std::string& taskStatus) {
+    this->status = taskStatus;
 }
 
 bool Task::operator>(const Task& other) const {

@@ -15,17 +15,18 @@ class Scheduler {
 private:
     std::priority_queue<Task, std::vector<Task>, std::greater<>> taskQueue;
     History history;
-    static Task inputTaskDetails(const std::string& prompt, bool clearBuffer);
+    static int nextTaskID;
+    static Task inputTaskDetails(const std::string& prompt, bool clearBuffer, int id);
+    static void displayTaskDetails(const Task& task, int index) ;
 
 public:
     void addTask(const Task& task);
     void executeTask();
-    void displayOngoingTasks() const;
+    static Task inputTask();
     void modifyTask();
-    static void displayMenu() ;
-    static Task inputTask() ;
+    void displayOngoingTasks() const;
+    static void displayMenu();
     void run();
 };
-
 
 #endif //CMPS2131_SCHEDULER_H

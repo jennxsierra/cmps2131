@@ -1,6 +1,8 @@
 #include "headers/Scheduler.h"
 
-Task Scheduler::inputTaskDetails(const std::string& prompt, bool clearBuffer) {
+int Scheduler::nextTaskID = 1;
+
+Task Scheduler::inputTaskDetails(const std::string& prompt, bool clearBuffer, int id) {
     int priority;
     std::string taskName, description, deadlineStr;
     std::tm tm = {};
@@ -45,54 +47,60 @@ Task Scheduler::inputTaskDetails(const std::string& prompt, bool clearBuffer) {
     }
 
     auto deadline = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-    return Task(priority, taskName, description, deadline);
+    return {id, priority, taskName, description, deadline};
+}
+
+void Scheduler::displayTaskDetails(const Task& task, int index) {
+    auto timeLeft = task.getTimeLeft();
+    auto days = std::chrono::duration_cast<std::chrono::days>(timeLeft).count();
+    auto hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count() % 24;
+    auto minutes = std::chrono::duration_cast<std::chrono::minutes>(timeLeft).count() % 60;
+
+    std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
+    std::tm* deadlineTm = std::localtime(&deadlineTime);
+    char deadlineStr[20];
+    std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", deadlineTm);
+
+    std::cout << index << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
+    std::cout << "--------------------------------------\n";
+    std::cout << "Description: " << task.getDescription() << "\n";
+    std::cout << "Status: " << task.getStatus() << "\n";
+    std::cout << "Deadline: " << deadlineStr << "\n";
+    std::cout << "Time Left: " << days << " days, " << hours << " hours, " << minutes << " minutes\n\n";
 }
 
 void Scheduler::addTask(const Task& task) {
-    taskQueue.push(task);
+    taskQueue.emplace(task);
     history.logNewTask(task);
 }
 
 void Scheduler::executeTask() {
     if (taskQueue.empty()) {
-        throw std::runtime_error("\nNo tasks to execute.");
-    }
-
-    Task task = taskQueue.top();
-    taskQueue.pop();
-    task.setCompletedTime(std::chrono::system_clock::now());
-    history.logCompletedTask(task);
-}
-
-void Scheduler::displayOngoingTasks() const {
-    if (taskQueue.empty()) {
-        std::cout << "\nNo tasks in the queue.\n";
+        std::cout << "\nNo tasks to execute.\n";
         return;
     }
 
-    std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue = taskQueue;
-    std::cout << "\n--- Tasks in Queue ---\n\n";
+    Task task = taskQueue.top();
+    std::cout << "\n\t--- Next Task ---\n\n";
+    displayTaskDetails(task, 1);
 
-    int index = 1;
-    while (!tempQueue.empty()) {
-        const Task& task = tempQueue.top();
-        auto timeLeft = task.getTimeLeft();
-        auto days = std::chrono::duration_cast<std::chrono::days>(timeLeft).count();
-        auto hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count() % 24;
-        auto minutes = std::chrono::duration_cast<std::chrono::minutes>(timeLeft).count() % 60;
+    char confirmation;
+    std::cout << "Execute this Task? [Y/N]: ";
+    std::cin >> confirmation;
 
-        std::time_t deadlineTime = std::chrono::system_clock::to_time_t(task.getDeadline());
-        std::tm* deadlineTm = std::localtime(&deadlineTime);
-        char deadlineStr[20];
-        std::strftime(deadlineStr, sizeof(deadlineStr), "%Y-%m-%d %H:%M:%S", deadlineTm);
-
-        std::cout << index++ << ". " << task.getName() << " [Priority: " << task.getPriority() << "]\n";
-        std::cout << "--------------------------------------\n";
-        std::cout << "Description: " << task.getDescription() << "\n";
-        std::cout << "Deadline: " << deadlineStr << "\n";
-        std::cout << "Time Left: " << days << " days, " << hours << " hours, " << minutes << " minutes\n\n";
-        tempQueue.pop();
+    if (confirmation == 'y' || confirmation == 'Y') {
+        taskQueue.pop();
+        task.setCompletedTime(std::chrono::system_clock::now());
+        task.setStatus("Completed");
+        history.logCompletedTask(task);
+        std::cout << "\nTask executed successfully!\n";
+    } else {
+        std::cout << "\nTask execution canceled.\n";
     }
+}
+
+Task Scheduler::inputTask() {
+    return inputTaskDetails("Enter Task Details", true, nextTaskID++);
 }
 
 void Scheduler::modifyTask() {
@@ -101,10 +109,9 @@ void Scheduler::modifyTask() {
         return;
     }
 
-    std::string taskName;
-    std::cout << "Enter the name of the task to modify: ";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getline(std::cin, taskName);
+    int taskId;
+    std::cout << "Enter the ID of the task to modify: ";
+    std::cin >> taskId;
 
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
     bool found = false;
@@ -113,9 +120,9 @@ void Scheduler::modifyTask() {
         Task task = taskQueue.top();
         taskQueue.pop();
 
-        if (task.getName() == taskName) {
+        if (task.getID() == taskId) {
             found = true;
-            Task modifiedTask = inputTaskDetails("Modify Task Details", false);
+            Task modifiedTask = inputTaskDetails("Modify Task Details", false, taskId);
             task.setName(modifiedTask.getName());
             task.setPriority(modifiedTask.getPriority());
             task.setDescription(modifiedTask.getDescription());
@@ -133,6 +140,24 @@ void Scheduler::modifyTask() {
     taskQueue = tempQueue;
 }
 
+void Scheduler::displayOngoingTasks() const {
+    if (taskQueue.empty()) {
+        std::cout << "\nNo tasks in the queue.\n";
+        return;
+    }
+
+    std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue = taskQueue;
+    std::cout << "\n--- Tasks in Queue ---\n\n";
+
+    int index = 1;
+    while (!tempQueue.empty()) {
+        const Task& task = tempQueue.top();
+        displayTaskDetails(task, index++);
+        tempQueue.pop();
+    }
+}
+
+
 void Scheduler::displayMenu() {
     std::cout << "\n--- Task Scheduler Menu ---\n";
     std::cout << "1. Add Task\n";
@@ -143,10 +168,6 @@ void Scheduler::displayMenu() {
     std::cout << "6. View Task History Log\n";
     std::cout << "7. Exit\n";
     std::cout << "\nEnter your choice: ";
-}
-
-Task Scheduler::inputTask() {
-    return inputTaskDetails("Enter Task Details", true);
 }
 
 void Scheduler::run() {
@@ -172,12 +193,7 @@ void Scheduler::run() {
                 break;
             }
             case 3: {
-                try {
-                    this->executeTask();
-                    std::cout << "\nTask executed successfully!\n";
-                } catch (const std::exception& e) {
-                    std::cout << "Error: " << e.what() << "\n";
-                }
+                this->executeTask();
                 break;
             }
             case 4: {
