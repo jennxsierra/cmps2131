@@ -20,13 +20,15 @@ private:
     static void displayTaskDetails(const Task& task, int index);
 
 public:
-    void addTask(const Task& task);
-    void executeTask();
     static Task inputTask();
+    void addTask(const Task& task);
+    void deleteTask();
     void modifyTask();
+    void executeTask();
     void displayOngoingTasks() const;
     static void displayMenu();
     void run();
 };
+
 
 #endif //CMPS2131_SCHEDULER_H

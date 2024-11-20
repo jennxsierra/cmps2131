@@ -68,38 +68,58 @@ void Scheduler::displayTaskDetails(const Task& task, int i) {
     std::cout << "Time Left: " << days << " days, " << hours << " hours, " << minutes << " minutes\n\n";
 }
 
+Task Scheduler::inputTask() {
+    return inputTaskDetails("Enter Task Details", nextTaskID++);
+}
+
 void Scheduler::addTask(const Task& task) {
     taskQueue.emplace(task);
     history.logNewTask(task);
 }
 
-void Scheduler::executeTask() {
+void Scheduler::deleteTask() {
     if (taskQueue.empty()) {
-        std::cout << "\nNo tasks to execute.\n";
+        std::cout << "\nNo tasks to delete.\n";
         return;
     }
 
-    Task task = taskQueue.top();
-    std::cout << "\n\t--- Next Task ---\n\n";
-    displayTaskDetails(task, 1);
+    std::string input;
+    int taskId;
+    std::cout << "Enter Task ID to delete [Ex: #000]: ";
+    std::cin >> input;
 
-    char confirmation;
-    std::cout << "Execute this Task? [Y/N]: ";
-    std::cin >> confirmation;
-
-    if (confirmation == 'y' || confirmation == 'Y') {
-        taskQueue.pop();
-        task.setCompletedTime(std::chrono::system_clock::now());
-        task.setStatus("Completed");
-        history.logCompletedTask(task);
-        std::cout << "\nTask executed successfully!\n";
-    } else {
-        std::cout << "\nTask execution canceled.\n";
+    if (input[0] == '#') {
+        input = input.substr(1);
     }
-}
 
-Task Scheduler::inputTask() {
-    return inputTaskDetails("Enter Task Details", nextTaskID++);
+    try {
+        taskId = std::stoi(input);
+    } catch (const std::invalid_argument& e) {
+        std::cout << "\nInvalid Task ID format.\n";
+        return;
+    }
+
+    std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
+    bool found = false;
+
+    while (!taskQueue.empty()) {
+        Task task = taskQueue.top();
+        taskQueue.pop();
+
+        if (task.getID() == taskId) {
+            found = true;
+            std::cout << "\nTask deleted successfully!\n";
+            history.removeTask(taskId);
+        } else {
+            tempQueue.push(task);
+        }
+    }
+
+    if (!found) {
+        std::cout << "\nTask not found.\n";
+    }
+
+    taskQueue = tempQueue;
 }
 
 void Scheduler::modifyTask() {
@@ -164,6 +184,31 @@ void Scheduler::modifyTask() {
     taskQueue = tempQueue;
 }
 
+void Scheduler::executeTask() {
+    if (taskQueue.empty()) {
+        std::cout << "\nNo tasks to execute.\n";
+        return;
+    }
+
+    Task task = taskQueue.top();
+    std::cout << "\n\t--- Next Task ---\n\n";
+    displayTaskDetails(task, 1);
+
+    char confirmation;
+    std::cout << "Execute this Task? [Y/N]: ";
+    std::cin >> confirmation;
+
+    if (confirmation == 'y' || confirmation == 'Y') {
+        taskQueue.pop();
+        task.setCompletedTime(std::chrono::system_clock::now());
+        task.setStatus("Completed");
+        history.logCompletedTask(task);
+        std::cout << "\nTask executed successfully!\n";
+    } else {
+        std::cout << "\nTask execution canceled.\n";
+    }
+}
+
 void Scheduler::displayOngoingTasks() const {
     if (taskQueue.empty()) {
         std::cout << "\nNo tasks in the queue.\n";
@@ -184,12 +229,13 @@ void Scheduler::displayOngoingTasks() const {
 void Scheduler::displayMenu() {
     std::cout << "\n--- Task Scheduler Menu ---\n";
     std::cout << "1. Add Task\n";
-    std::cout << "2. Modify Task\n";
-    std::cout << "3. Execute Next Task\n";
-    std::cout << "4. View Ongoing Tasks\n";
-    std::cout << "5. View Completed Tasks\n";
-    std::cout << "6. View Task History Log\n";
-    std::cout << "7. Exit\n";
+    std::cout << "2. Delete Task\n";
+    std::cout << "3. Modify Task\n";
+    std::cout << "4. Execute Next Task\n";
+    std::cout << "5. View Ongoing Tasks\n";
+    std::cout << "6. View Completed Tasks\n";
+    std::cout << "7. View Task History Log\n";
+    std::cout << "8. Exit\n";
     std::cout << "\nEnter your choice: ";
 }
 
@@ -198,10 +244,10 @@ void Scheduler::run() {
 
     do {
         Scheduler::displayMenu();
-        while (!(std::cin >> choice) || choice < 1 || choice > 7) {
+        while (!(std::cin >> choice) || choice < 1 || choice > 8) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid choice.\n\nEnter a number between 1 and 7: ";
+            std::cout << "Invalid choice.\n\nEnter a number between 1 and 8: ";
         }
 
         switch (choice) {
@@ -212,27 +258,31 @@ void Scheduler::run() {
                 break;
             }
             case 2: {
-                this->modifyTask();
+                this->deleteTask();
                 break;
             }
             case 3: {
-                this->executeTask();
+                this->modifyTask();
                 break;
             }
             case 4: {
-                this->displayOngoingTasks();
+                this->executeTask();
                 break;
             }
             case 5: {
-                history.displayCompletedTasks();
+                this->displayOngoingTasks();
                 break;
             }
             case 6: {
-                history.displayTaskHistory();
+                history.displayCompletedTasks();
                 break;
             }
             case 7: {
-                std::cout << "\nExiting the Task Scheduler. Goodbye!\n";
+                history.displayTaskHistory();
+                break;
+            }
+            case 8: {
+                std::cout << "\nExiting Task Scheduler. Goodbye!\n";
                 break;
             }
             default: {
@@ -240,5 +290,5 @@ void Scheduler::run() {
                 break;
             }
         }
-    } while (choice != 7);
+    } while (choice != 8);
 }

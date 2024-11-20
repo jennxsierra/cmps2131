@@ -13,6 +13,7 @@ private:
 
 public:
     void logNewTask(const Task& task);
+    void removeTask(int taskID);
     void logModifiedTask(const Task& task);
     void logCompletedTask(const Task& task);
     void displayTaskHistory() const;

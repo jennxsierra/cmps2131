@@ -4,6 +4,21 @@ void History::logNewTask(const Task& task) {
     allTasks.push_back(task);
 }
 
+void History::removeTask(int taskID) {
+    allTasks.erase(std::remove_if(allTasks.begin(), allTasks.end(),
+        [taskID](const Task& task) { return task.getID() == taskID; }), allTasks.end());
+
+    std::stack<Task> tempStack;
+    while (!completedTasks.empty()) {
+        Task task = completedTasks.top();
+        completedTasks.pop();
+        if (task.getID() != taskID) {
+            tempStack.push(task);
+        }
+    }
+    completedTasks = tempStack;
+}
+
 void History::logModifiedTask(const Task& task) {
     for (auto& t : allTasks) {
         if (t.getID() == task.getID()) {
