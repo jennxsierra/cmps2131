@@ -1,6 +1,6 @@
 // Final Project: Task Scheduler Program
 // Name: Jennessa Sierra
-// Class: Data Structures [CMPS2131-1]
+// Course: Data Structures [CMPS2131-1]
 // Semester: 2024-1
 // Completion Date: 11/22/2024
 // Description: A task scheduler that allows users to add, delete, modify, execute, and view tasks and their history.
