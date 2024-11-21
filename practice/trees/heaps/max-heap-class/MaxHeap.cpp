@@ -1,4 +1,3 @@
-#include <iostream>
 #include "MaxHeap.h"
 
 void MaxHeap::printHeap() const {
@@ -25,7 +24,7 @@ void MaxHeap::insert(int key) {
     std::cout << "Inserting: " << key << std::endl;
 
     heapArr.push_back(key);
-    reheapUp(heapArr.size() - 1);
+    reheapUp(static_cast<int>(heapArr.size() - 1));
 }
 
 void MaxHeap::deleteMax() {
@@ -38,7 +37,7 @@ void MaxHeap::deleteMax() {
 
     heapArr[0] = heapArr.back();
     heapArr.pop_back();
-    reheapDown(0, heapArr.size() - 1);
+    reheapDown(0, static_cast<int>(heapArr.size() - 1));
 }
 
 void MaxHeap::reheapUp(int i) {
@@ -97,5 +96,5 @@ void MaxHeap::deleteNode(int key) {
     heapArr[index] = heapArr.back();
     heapArr.pop_back();
 
-    reheapDown(index, heapArr.size() - 1);
+    reheapDown(index, static_cast<int>(heapArr.size() - 1));
 }

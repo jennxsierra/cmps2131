@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 
 #ifndef CMPS2131_MAXHEAP_H
 #define CMPS2131_MAXHEAP_H
