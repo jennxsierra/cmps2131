@@ -7,7 +7,7 @@ private:
     static const int TABLE_SIZE = 10;
     std::vector<std::vector<std::pair<std::string, int>>> table;
 
-    int hashFunction(const std::string& key) {
+    static int hashFunction(const std::string& key) {
         // Hash function: sum of ASCII values mod table size
         int hash = 0;
         for (char ch : key) {
