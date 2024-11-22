@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 #include <chrono>
 
 class Task {
@@ -49,7 +50,7 @@ private:
 
 
 public:
-    Task(int taskID, int taskPrio, const std::string& taskName, const std::string& tDesc,
+    Task(int taskID, int taskPrio, std::string  taskName, std::string  tDesc,
          const std::chrono::system_clock::time_point& taskDLine);
 
     // Getters

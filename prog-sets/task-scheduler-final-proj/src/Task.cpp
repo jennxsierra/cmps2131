@@ -6,9 +6,9 @@
 // Sets the created time to the current time and the modified time to a minimum value using
 // std::chrono::system_clock that provides the current time from the computer's internal clock
 // https://cplusplus.com/reference/chrono/
-Task::Task(int taskID, int taskPrio, const std::string& taskName, const std::string& tDesc,
+Task::Task(int taskID, int taskPrio, std::string  taskName, std::string  tDesc,
            const std::chrono::system_clock::time_point& taskDLine)
-    : id(taskID), priority(taskPrio), name(taskName), description(tDesc), deadline(taskDLine), status("Ongoing"),
+    : id(taskID), priority(taskPrio), name(std::move(taskName)), description(std::move(tDesc)), deadline(taskDLine), status("Ongoing"),
     createdTime(std::chrono::system_clock::now()), modifiedTime(std::chrono::system_clock::time_point::min()) {
     if (priority < 1 || priority > 5) {
         // Throw an exception if the priority is not between 1-5
