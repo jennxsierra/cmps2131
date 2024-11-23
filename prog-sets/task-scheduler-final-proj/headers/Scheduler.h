@@ -4,18 +4,19 @@
 // and display tasks, as well as to display the task scheduler menu and run the scheduler.
 
 // It uses a private min-heap priority queue to store tasks, a History object to log task operations, and a static
-// variable to generate unique task IDs. It also uses private static methods to input task details and display task
-// details. The priority queue is sorted based on the Task class's comparison operators, which compare tasks based on
-// their priority and deadline.
+// variable to generate unique task IDs. The priority queue is sorted based on the Task class's comparison operators,
+// which compare tasks based on their priority and deadline.
 
-// The inputTask function prompts the user to enter task details and returns a new Task object.
-// The addTask function adds a task to the priority queue and logs it in the history.
-// The deleteTask function removes a task from the priority queue and the history based on the task ID.
-// The modifyTask function allows the user to modify an existing task's details.
-// The executeTask function executes the next task in the priority queue and logs it as completed in the history.
-// The displayOngoingTasks function displays all tasks currently in the priority queue.
-// The displayMenu function displays the task scheduler menu options.
-// The run function runs the task scheduler, allowing the user to interact with the menu and perform various operations.
+// inputTaskDetails: prompts the user for task details and returns a Task object with the given ID.
+// displayTaskDetails: displays the details of a task.
+// searchTask: searches for a task in the priority queue based on the task ID.
+// addTask: adds a task to the priority queue and logs it in the history.
+// deleteTask: removes a task from the priority queue and the history based on the task ID.
+// modifyTask: allows the user to modify an existing task's details.
+// completeTask: executes a task and logs it in the history as completed.
+// displayOngoingTasks: displays all tasks currently in the priority queue.
+// displayMenu: displays the task scheduler menu options.
+// run: executes the task scheduler menu and its operations.
 
 #ifndef CMPS2131_SCHEDULER_H
 #define CMPS2131_SCHEDULER_H
@@ -45,7 +46,7 @@ private:
     static Task inputTaskDetails(const std::string& prompt, int id);
     static void displayTaskDetails(const Task& task, int index);
 
-    // The search function uses an optional return type to indicate that the task may or may not be found
+    // Uses an optional return type to indicate that the task may or may not be found
     // https://builtin.com/articles/stdoptional
     std::optional<Task> searchTask();
 

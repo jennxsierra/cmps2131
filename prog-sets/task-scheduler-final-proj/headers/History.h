@@ -4,14 +4,12 @@
 // all tasks created. It also provides methods to log new, modified, and completed tasks, remove tasks, and display
 // the task history log and completed tasks log.
 
-// The logNewTask function adds a new task to the list of all tasks.
-// The removeTask function removes a task from the list of all tasks and the stack of completed tasks
-// based on the task ID.
-// The logModifiedTask function updates the details of a modified task in the list of all tasks.
-// The logCompletedTask function adds a completed task to the stack of completed tasks and updates
-// its status in the list of all tasks.
-// The displayTaskHistory function displays the history of all tasks, sorted by their creation time.
-// The displayCompletedTasks function displays the history of completed tasks, sorted by their completion time.
+// logNewTask: adds a new task to the history log list.
+// removeTask: removes a task from history log list and completed tasks stack based on the task ID.
+// logModifiedTask: updates the details of a modified task in the history log list
+// logCompletedTask: adds completed task to completed tasks stack and updates its status in the history log list.
+// displayTaskHistory: displays the history log list, sorted by their creation time.
+// displayCompletedTasks: displays the completed tasks stack, sorted by their completion time.
 
 #ifndef CMPS2131_HISTORY_H
 #define CMPS2131_HISTORY_H

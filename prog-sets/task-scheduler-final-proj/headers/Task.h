@@ -4,27 +4,21 @@
 // status, description, and various timestamps (created, modified, completed). The class provides methods to access
 // and modify these attributes, as well as operator overloads for priority comparison.
 
-// The Task constructor initializes a task with the given ID, priority, name, description, and deadline. It also sets
-// the created time to the current time and initializes the modified time to a minimum value.
+// The Default Constructor initializes a task with default values for all attributes.
 
-// The getID function returns the task's ID.
-// The getPriority function returns the task's priority.
-// The getName function returns the task's name.
-// The getStatus function returns the task's status.
-// The getDescription function returns the task's description.
-// The getDeadline function returns the task's deadline.
-// The getTimeLeft function returns the time left until the task's deadline.
-// The getCreatedTime function returns the task's creation time.
-// The getModifiedTime function returns the task's last modified time.
-// The getCompletedTime function returns the task's completion time.
+// The Parameterized Constructor initializes a task with the given ID, priority, name, description, and deadline.
+// It also sets the created time to the current time and initializes the modified time to a minimum value.
 
-// The setName function sets the task's name.
-// The setStatus function sets the task's status.
-// The setDescription function sets the task's description.
-// The setPriority function sets the task's priority, ensuring it is between 1 and 5.
-// The setDeadline function sets the task's deadline.
-// The setModifiedTime function sets the task's last modified time.
-// The setCompletedTime function sets the task's completion time.
+// getID: returns the task's ID.                             |
+// getPriority: returns the task's priority.                 |
+// getName: returns the task's name.                         |  setName: sets the task's name.
+// getStatus: returns the task's status.                     |  setStatus: sets the task's status.
+// getDescription: returns the task's description.           |  setDescription: sets the task's description.
+// getDeadline returns the task's deadline.                  |  setPriority: sets the task's priority (1-5).
+// getTimeLeft: returns the time left until task's deadline. |  setDeadline: sets the task's deadline.
+// getCreatedTime: returns the task's creation time.         |
+// getModifiedTime: returns the task's last modified time.   |  setModifiedTime: sets the task's last modified time.
+// getCompletedTime: returns the task's completion time.     |  setCompletedTime: sets the task's completion time.
 
 // The operator> and operator< overloads compare tasks based on their priority and deadline.
 
