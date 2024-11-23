@@ -111,27 +111,11 @@ void Scheduler::displayTaskDetails(const Task& task, int i) {
     std::cout << "Time Left: " << days << " days, " << hours << " hours, " << minutes << " minutes\n\n";
 }
 
-// Calls the inputTaskDetails method to prompt the user for task details and returns the created Task object
-Task Scheduler::inputTask() {
-    return inputTaskDetails("Enter Task Details", nextTaskID++);
-}
-
-// Adds a task to the priority queue using emplace and logs it in the history
-void Scheduler::addTask(const Task& task) {
-    taskQueue.emplace(task);
-    history.logNewTask(task);
-}
-
-// Deletes a task from the priority queue and the history based on the task ID
-void Scheduler::deleteTask() {
-    if (taskQueue.empty()) { // Check if the task queue is empty
-        std::cout << "\nNo tasks to delete.\n";
-        return;
-    }
-
+// Method to search for a task by ID and return it if found
+std::optional<Task> Scheduler::searchTask() {
     std::string input;
     int taskId;
-    std::cout << "Enter Task ID to delete [Ex: #000]: ";
+    std::cout << "Enter Task ID [Ex: #000]: ";
     std::cin >> input; // Get the task ID from the user
 
     // Remove the '#' character if present using substr which
@@ -149,13 +133,12 @@ void Scheduler::deleteTask() {
         taskId = std::stoi(input);
     } catch (const std::invalid_argument& e) {
         std::cout << "\nInvalid Task ID format.\n";
-        return;
+        return std::nullopt; // Return an empty optional if the conversion fails
     }
 
     // Create a temporary priority queue to store tasks
     std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
-    bool found = false; // Flag to indicate if the task was found
-    int index = 1; // Counter for numbering the tasks
+    std::optional<Task> foundTask; // Optional Task to store the found task
 
     // Iterate through the tasks in the queue to find and delete the specified task
     while (!taskQueue.empty()) {
@@ -165,33 +148,75 @@ void Scheduler::deleteTask() {
 
         // Check if the task ID matches the input ID
         if (task.getID() == taskId) {
-            found = true; // Indicate that the task was found
-            std::cout << "\n\t--- Task Details ---\n\n";
-            displayTaskDetails(task, index);
-
-            // Ask the user for confirmation before deleting the task
-            char confirmation;
-            std::cout << "Delete this Task? [Y/N]: ";
-            std::cin >> confirmation;
-
-            // Log the task removal in the history if confirmed
-            if (confirmation == 'y' || confirmation == 'Y') {
-                history.removeTask(task.getID());
-                std::cout << "\nTask deleted successfully!\n";
-            } else {
-                std::cout << "\nTask deletion canceled.\n";
-            }
-        } else { // If the task ID does not match, add it to the temporary queue
+            foundTask = task; // Store the found task in the optional
+        } else {
+            // If the task ID does not match, add it to the temporary queue
             tempQueue.push(task);
         }
     }
 
-    if (!found) { // If the task was not found, display a message
-        std::cout << "\nTask not found.\n";
+    // If the task was not found, restore the tasks from the temporary queue
+    if (!foundTask) {
+        taskQueue = tempQueue;
+    } else { // If the task was found, restore the tasks and add the found task back to the queue
+        while (!tempQueue.empty()) {
+            taskQueue.push(tempQueue.top());
+            tempQueue.pop();
+        }
     }
 
-    // Replace the task queue with the temporary queue after deletion
-    taskQueue = tempQueue;
+    // Return the found task if it exists, otherwise return an empty optional
+    return foundTask;
+}
+
+// Calls the inputTaskDetails method to prompt the user for task details and returns the created Task object
+Task Scheduler::inputTask() {
+    return inputTaskDetails("Enter Task Details", nextTaskID++);
+}
+
+// Adds a task to the priority queue using emplace and logs it in the history
+void Scheduler::addTask(const Task& task) {
+    taskQueue.emplace(task);
+    history.logNewTask(task);
+}
+
+// Deletes a task from the priority queue and the history based on the task ID
+void Scheduler::deleteTask() {
+    if (taskQueue.empty()) { // Check if the queue is empty
+        std::cout << "\nNo tasks to delete.\n";
+        return;
+    }
+
+    // Search for the task in the queue
+    auto taskOpt = searchTask();
+    if (!taskOpt) {
+        std::cout << "\nTask not found.\n";
+        return;
+    }
+
+    // Get the task details and display them to the user
+    Task task = taskOpt.value();
+    std::cout << "\n\t--- Task Details ---\n\n";
+    displayTaskDetails(task, 1);
+
+    // Prompt the user for confirmation to delete the task
+    char confirmation;
+    while (true) {
+        std::cout << "Delete this Task? [Y/N]: ";
+        std::cin >> confirmation;
+        confirmation = tolower(confirmation);
+        if (confirmation == 'y' || confirmation == 'n') break;
+        std::cout << "Invalid input. Please enter 'Y' or 'N'.\n";
+    }
+
+    // If confirmed, remove the task from the history and queue
+    if (confirmation == 'y') {
+        history.removeTask(task.getID());
+        std::cout << "\nTask deleted successfully!\n";
+    } else { // If not confirmed, add the task back to the queue
+        std::cout << "\nTask deletion canceled.\n";
+        taskQueue.push(task);
+    }
 }
 
 // Modifies an existing task's details using a similar approach to deleting a task
@@ -201,142 +226,113 @@ void Scheduler::modifyTask() {
         return;
     }
 
-    std::string input;
-    int taskId;
-    std::cout << "Enter Task ID [Ex: #000]: ";
-    std::cin >> input;
-
-    if (input[0] == '#') {
-        input = input.substr(1);
-    }
-
-    try {
-        taskId = std::stoi(input);
-    } catch (const std::invalid_argument& e) {
-        std::cout << "\nInvalid Task ID format.\n";
+    auto taskOpt = searchTask();
+    if (!taskOpt) {
+        std::cout << "\nTask not found.\n";
         return;
     }
 
-    std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
-    bool found = false;
-    int index = 1;
+    Task task = taskOpt.value();
+    std::cout << "\n\t--- Task Details ---\n\n";
+    displayTaskDetails(task, 1);
 
-    while (!taskQueue.empty()) {
-        Task task = taskQueue.top();
-        taskQueue.pop();
+    char confirmation;
+    while (true) {
+        std::cout << "Modify this Task? [Y/N]: ";
+        std::cin >> confirmation;
+        confirmation = tolower(confirmation);
+        if (confirmation == 'y' || confirmation == 'n') break;
+        std::cout << "Invalid input. Please enter 'Y' or 'N'.\n";
+    }
 
-        if (task.getID() == taskId) {
-            found = true;
-            std::cout << "\n\t--- Task Details ---\n\n";
-            displayTaskDetails(task, index);
-
-            char confirmation;
-            std::cout << "Modify this Task? [Y/N]: ";
-            std::cin >> confirmation;
-
-            if (confirmation == 'y' || confirmation == 'Y') {
-                Task modifiedTask = inputTaskDetails("Modify Task Details", taskId);
-                task.setName(modifiedTask.getName());
-                task.setPriority(modifiedTask.getPriority());
-                task.setDescription(modifiedTask.getDescription());
-                task.setDeadline(modifiedTask.getDeadline());
-                history.logModifiedTask(task);
-                std::cout << "\nTask modified successfully!\n";
-            } else {
-                std::cout << "\nTask modification canceled.\n";
+    if (confirmation == 'y') {
+        // Remove the task and rebuild the queue without the modified task
+        std::vector<Task> tasks;
+        while (!taskQueue.empty()) {
+            if (taskQueue.top().getID() != task.getID()) {
+                tasks.push_back(taskQueue.top());
             }
+            taskQueue.pop();
         }
-        tempQueue.push(task);
-        index++;
-    }
 
-    if (!found) {
-        std::cout << "\nTask not found.\n";
-    }
+        // Create modified task by getting new details from the user
+        Task modifiedTask = inputTaskDetails("Modify Task Details", task.getID());
+        history.logModifiedTask(modifiedTask);
+        tasks.push_back(modifiedTask); // Add the modified task to the queue
 
-    taskQueue = tempQueue;
+        // Rebuild the queue
+        for (const auto& t : tasks) {
+            taskQueue.push(t);
+        }
+
+        std::cout << "\nTask modified successfully!\n";
+    } else { // If not confirmed, add the task back to the queue
+        std::cout << "\nTask modification canceled.\n";
+        taskQueue.push(task);
+    }
 }
 
-// Executes the next task in the priority queue and logs it as completed
+// Executes either the next task in the priority queue or a specific task based on user choice
 void Scheduler::completeTask() {
-    if (taskQueue.empty()) {
+    if (taskQueue.empty()) { // Check if the queue is empty
         std::cout << "\nNo tasks to complete.\n";
         return;
     }
 
+    // Prompt the user to complete the next task or search for a specific task
     char choice;
     while (true) {
         std::cout << "Complete Next Task or Search for Task? [N/S]: ";
         std::cin >> choice;
-
-        if (choice == 'N' || choice == 'n' || choice == 'S' || choice == 's') {
-            break;
-        } else {
-            std::cout << "Invalid choice.\n" << std::endl;
-        }
+        choice = tolower(choice);
+        if (choice == 'n' || choice == 's') break;
+        std::cout << "Invalid choice. Please enter 'N' or 'S'.\n";
     }
 
     Task task;
     bool found = false;
 
-    if (choice == 'S' || choice == 's') {
-        std::string input;
-        int taskId;
-        std::cout << "Enter Task ID [Ex: #000]: ";
-        std::cin >> input;
-
-        if (input[0] == '#') {
-            input = input.substr(1);
+    if (choice == 's') { // Search for a specific task
+        auto taskOpt = searchTask();
+        if (taskOpt) {
+            task = taskOpt.value();
+            found = true;
         }
-
-        try {
-            taskId = std::stoi(input);
-        } catch (const std::invalid_argument& e) {
-            std::cout << "\nInvalid Task ID format.\n";
-            return;
-        }
-
-        std::priority_queue<Task, std::vector<Task>, std::greater<>> tempQueue;
-
-        while (!taskQueue.empty()) {
-            task = taskQueue.top();
-            taskQueue.pop();
-
-            if (task.getID() == taskId) {
-                found = true;
-                break;
-            } else {
-                tempQueue.push(task);
-            }
-        }
-
-        taskQueue = tempQueue;
-
-        if (!found) {
-            std::cout << "\nTask not found.\n";
-            return;
-        }
-    } else {
+    } else { // Get the next task in the queue
         task = taskQueue.top();
+        found = true;
     }
 
-    std::cout << "\n\t--- Task to Complete ---\n\n";
-    displayTaskDetails(task, 1);
+    if (found) { // If the task is found, display its details and prompt the user for confirmation
+        std::cout << "\n\t--- Task to Complete ---\n\n";
+        displayTaskDetails(task, 1);
 
-    char confirmation;
-    std::cout << "Complete this Task? [Y/N]: ";
-    std::cin >> confirmation;
-
-    if (confirmation == 'y' || confirmation == 'Y') {
-        if (choice != 'S' && choice != 's') {
-            taskQueue.pop();
+        char confirmation;
+        while (true) {
+            std::cout << "Complete this Task? [Y/N]: ";
+            std::cin >> confirmation;
+            confirmation = tolower(confirmation);
+            if (confirmation == 'y' || confirmation == 'n') break;
+            std::cout << "Invalid input. Please enter 'Y' or 'N'.\n";
         }
-        task.setCompletedTime(std::chrono::system_clock::now());
-        task.setStatus("Completed");
-        history.logCompletedTask(task);
-        std::cout << "\nTask completed successfully!\n";
-    } else {
-        std::cout << "\nTask completion canceled.\n";
+
+        if (confirmation == 'y') {
+            // Mark the task as completed and log it in the history
+            if (choice != 's') {
+                taskQueue.pop(); // Remove from the queue ONLY if it's the next task
+            }
+            task.setCompletedTime(std::chrono::system_clock::now());
+            task.setStatus("Completed");
+            history.logCompletedTask(task);
+            std::cout << "\nTask completed successfully!\n";
+        } else { // If not confirmed, add the task back to the queue
+            std::cout << "\nTask completion canceled.\n";
+            if (choice == 's') {
+                taskQueue.push(task);
+            }
+        }
+    } else { // If the task is not found, inform the user
+        std::cout << "\nTask not found.\n";
     }
 }
 

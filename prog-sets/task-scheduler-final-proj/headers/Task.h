@@ -85,7 +85,6 @@ public:
     // Operator overloads for priority comparison
     bool operator>(const Task& other) const;
     bool operator<(const Task& other) const;
-
 };
 
 

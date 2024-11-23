@@ -25,6 +25,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <optional>
 #include <limits>
 #include <iomanip>
 #include <sstream>
@@ -43,6 +44,10 @@ private:
     static int nextTaskID;
     static Task inputTaskDetails(const std::string& prompt, int id);
     static void displayTaskDetails(const Task& task, int index);
+
+    // The search function uses an optional return type to indicate that the task may or may not be found
+    // https://builtin.com/articles/stdoptional
+    std::optional<Task> searchTask();
 
 public:
     static Task inputTask();
