@@ -49,7 +49,7 @@ public:
     void addTask(const Task& task);
     void deleteTask();
     void modifyTask();
-    void executeTask();
+    void completeTask();
     void displayOngoingTasks() const;
     static void displayMenu();
     void run();

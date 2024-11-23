@@ -50,6 +50,14 @@ private:
 
 
 public:
+    // Default constructor
+    Task() : id(0), priority(0), name(" "), status("Ongoing"), description(" "),
+             deadline(std::chrono::system_clock::time_point::min()),
+             createdTime(std::chrono::system_clock::now()),
+             modifiedTime(std::chrono::system_clock::time_point::min()),
+             completedTime(std::chrono::system_clock::time_point::min()) {}
+
+    // Parameterized constructor
     Task(int taskID, int taskPrio, std::string  taskName, std::string  tDesc,
          const std::chrono::system_clock::time_point& taskDLine);
 
