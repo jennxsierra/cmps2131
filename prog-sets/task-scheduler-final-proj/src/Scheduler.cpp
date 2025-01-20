@@ -195,7 +195,7 @@ void Scheduler::deleteTask() {
     }
 
     // Get the task details and display them to the user
-    Task task = taskOpt.value();
+    const Task& task = taskOpt.value();
     std::cout << "\n\t--- Task Details ---\n\n";
     displayTaskDetails(task, 1);
 
@@ -232,7 +232,7 @@ void Scheduler::modifyTask() {
         return;
     }
 
-    Task task = taskOpt.value();
+    const Task& task = taskOpt.value();
     std::cout << "\n\t--- Task Details ---\n\n";
     displayTaskDetails(task, 1);
 

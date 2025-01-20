@@ -288,7 +288,7 @@ public:
 };
 
 int main() {
-    MgmtSystem restaurant{"Restaurant Name"};
+    MgmtSystem restaurant{"McDonald's"};
     restaurant.driverProgram();
 
     return 0;
