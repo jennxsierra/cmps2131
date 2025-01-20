@@ -9,3 +9,5 @@
 | Section        | 1                                                          |
 | Instructor     | Ms. Vernelle Sylvester, MSc.                               |
 | Semester Taken | 2024-1                                                     |
+
+Final Project: [Task Scheduler](https://github.com/jennxsierra/task-scheduler-program)
